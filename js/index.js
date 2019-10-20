@@ -52,11 +52,32 @@ app.get('/workshop/:name', function (req, res) {
 })
 
 app.post('/remove-workshop', function (req, res) {
-    res.status(500).send("TODO")
+    const workshopname = req.params.name
+    InMemoryWorkshop.removeWorkshopByName(workshopname).then(() => {
+        InMemoryWorkshop.getWorkshopList()
+            .then(workshops => {
+                res.render("index", {
+                    workshops: workshops
+                })
+            })
+    })
+        .catch(e => res.send(e.message))
+
 })
 
 app.post('/update-workshop', function(req, res) {
-    res.status(500).send("TODO")
+    const workshopName = req.params.name
+    const newworkshopName = req.body.name
+    const newworkshopDesc = req.body.description
+    InMemoryWorkshop.updateWorkshop(workshopName, { name: newworkshopName, description: newworkshopDesc }).then(() => {
+        InMemoryWorkshop.getWorkshopList()
+            .then(workshops => {
+                res.render("index", {
+                    workshops: workshops
+                })
+            })
+    })
+        .catch(e => res.send(e.message))
 })
 
 app.listen(3000, function () {
